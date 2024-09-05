@@ -19,6 +19,7 @@ import static java.lang.String.join;
 import static java.util.Comparator.comparing;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.*;
+import static java.util.stream.Stream.of;
 
 /**
  * {@link CrazyStreams} is an exercise class. Each method represent some operation with a collection of accounts that
@@ -242,8 +243,8 @@ public class CrazyStreams {
      */
     public Map<Character, Long> getCharacterFrequencyIgnoreCaseInFirstAndLastNames(int nameLengthBound) {
         return accounts.stream()
-                .filter(account -> account.getFirstName().length() >= nameLengthBound || account.getLastName().length() >= nameLengthBound)
-                .map(account -> account.getFirstName().toLowerCase() + account.getLastName().toLowerCase())
+                .flatMap(account -> of(account.getFirstName().toLowerCase(), account.getLastName().toLowerCase()))
+                .filter(name -> name.length() >= nameLengthBound)
                 .flatMapToInt(String::chars)
                 .mapToObj(i -> (char) i)
                 .collect(groupingBy(identity(), counting()));
